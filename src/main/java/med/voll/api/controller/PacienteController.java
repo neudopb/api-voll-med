@@ -48,7 +48,7 @@ public class PacienteController {
     @PutMapping
     @Transactional
     public ResponseEntity update(@RequestBody @Valid EntityUpdateDTO pacienteUpdateDTO) {
-        var paciente = repository.getReferenceById(pacienteUpdateDTO.id());
+        var paciente = repository.getReferenceByIdAndAtivoTrue(pacienteUpdateDTO.id());
         paciente.updateInformations(pacienteUpdateDTO);
 
         return ResponseEntity.ok(new PacienteDetailDTO(paciente));
@@ -57,7 +57,7 @@ public class PacienteController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity delete(@PathVariable Long id) {
-        var paciente = repository.getReferenceById(id);
+        var paciente = repository.getReferenceByIdAndAtivoTrue(id);
         paciente.inactivate();
 
         return ResponseEntity.noContent().build();
