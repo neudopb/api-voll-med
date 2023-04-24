@@ -49,7 +49,7 @@ public class MedicoController {
     @PutMapping
     @Transactional
     public ResponseEntity update(@RequestBody @Valid EntityUpdateDTO medicoUpdateDTO) {
-        var medico = repository.getReferenceById(medicoUpdateDTO.id());
+        var medico = repository.getReferenceByIdAndAtivoTrue(medicoUpdateDTO.id());
         medico.updateInformations(medicoUpdateDTO);
 
         return ResponseEntity.ok(new MedicoDetailDTO(medico));
@@ -58,7 +58,7 @@ public class MedicoController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity delete(@PathVariable Long id) {
-        var medico = repository.getReferenceById(id);
+        var medico = repository.getReferenceByIdAndAtivoTrue(id);
         medico.inactivate();
 
         return ResponseEntity.noContent().build();
