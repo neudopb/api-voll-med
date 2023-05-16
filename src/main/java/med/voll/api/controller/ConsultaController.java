@@ -22,8 +22,7 @@ public class ConsultaController {
     @PostMapping
     @Transactional
     public ResponseEntity schedule(@RequestBody @Valid AgendamentoConsultaDTO agendamento) {
-
-        consultaService.schedule(agendamento);
-        return ResponseEntity.ok(new ConsultaDetailDTO(null, null, null, null));
+        var detail = consultaService.schedule(agendamento);
+        return ResponseEntity.ok(detail);
     }
 }
