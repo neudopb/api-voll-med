@@ -1,6 +1,7 @@
 package med.voll.api.service;
 
 import med.voll.api.dto.AgendamentoConsultaDTO;
+import med.voll.api.dto.CancelamentoConsultaDTO;
 import med.voll.api.dto.ConsultaDetailDTO;
 import med.voll.api.infra.exception.ValidationExceptionApi;
 import med.voll.api.model.Consulta;
@@ -8,7 +9,8 @@ import med.voll.api.model.Medico;
 import med.voll.api.repository.ConsultaRepository;
 import med.voll.api.repository.MedicoRepository;
 import med.voll.api.repository.PacienteRepository;
-import med.voll.api.validation.ValidatorAgendamentoConsulta;
+import med.voll.api.validation.cancellation.ValidatorCancelamentoConsulta;
+import med.voll.api.validation.scheduling.ValidatorAgendamentoConsulta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,9 @@ public class ConsultaService {
     @Autowired
     private List<ValidatorAgendamentoConsulta> validations;
 
+    @Autowired
+    private List<ValidatorCancelamentoConsulta> validationsCancelamento;
+
     public ConsultaDetailDTO schedule(AgendamentoConsultaDTO agendamento) {
 
         if(!pacienteRepository.existsById(agendamento.pacienteId()))
@@ -46,10 +51,21 @@ public class ConsultaService {
             throw new ValidationExceptionApi("Não existe médico disponível nessa data!");
         }
 
-        var consulta = new Consulta(null, medico, paciente, agendamento.data());
+        var consulta = new Consulta(null, medico, paciente, agendamento.data(), null);
         consultaRepository.save(consulta);
 
         return new ConsultaDetailDTO(consulta);
+    }
+
+    public void cancel(CancelamentoConsultaDTO cancelamento) {
+
+        if(!consultaRepository.existsById(cancelamento.consultaId()))
+            throw new ValidationExceptionApi("Id da consulta informada não existe!");
+
+        validationsCancelamento.forEach(v -> v.validate(cancelamento));
+
+        var consulta = consultaRepository.getReferenceById(cancelamento.consultaId());
+        consulta.cancel(cancelamento.motivo());
     }
 
     private Medico pickMedico(AgendamentoConsultaDTO agendamento) {

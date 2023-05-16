@@ -2,6 +2,7 @@ package med.voll.api.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import med.voll.api.enuns.MotivoCancelamentoEnum;
 
 import java.time.LocalDateTime;
 
@@ -23,4 +24,10 @@ public class Consulta {
     @JoinColumn(name = "paciente_id")
     private Paciente paciente;
     private LocalDateTime data;
+    @Enumerated(EnumType.STRING)
+    private MotivoCancelamentoEnum motivoCancelamento;
+
+    public void cancel(MotivoCancelamentoEnum motivo) {
+        this.motivoCancelamento = motivo;
+    }
 }

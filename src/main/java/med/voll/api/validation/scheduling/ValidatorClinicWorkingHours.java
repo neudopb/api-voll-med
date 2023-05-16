@@ -1,4 +1,4 @@
-package med.voll.api.validation;
+package med.voll.api.validation.scheduling;
 
 import med.voll.api.dto.AgendamentoConsultaDTO;
 import med.voll.api.infra.exception.ValidationExceptionApi;
